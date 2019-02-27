@@ -9,4 +9,6 @@ void abfree(void *ptr);
 #define malloc abmalloc
 #define free abfree
 
+#define NULL ((void *)0)
+
 #endif // _ABMALLOC_H
