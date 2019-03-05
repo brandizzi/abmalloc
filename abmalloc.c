@@ -1,16 +1,20 @@
 #include "abmalloc.h"
 #include <unistd.h>
 
-void *last = NULL;
+typedef struct Header {
+  struct Header *previous;
+} Header;
+
+Header *last = NULL;
 
 void *abmalloc(size_t size) {
-  last = sbrk(size);
-  return last;
+  last = sbrk(sizeof(Header) + size);
+  return last + 1;
 }
 
 void abfree(void *ptr) {
-  if (ptr == last)
-      brk(ptr);
+  Header *header = (Header*) ptr - 1;
+
+  if (header == last)
+    brk(header);
 }
-
-
