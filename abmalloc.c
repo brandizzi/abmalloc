@@ -8,13 +8,17 @@ typedef struct Header {
 Header *last = NULL;
 
 void *abmalloc(size_t size) {
-  last = sbrk(sizeof(Header) + size);
+  Header *header = sbrk(sizeof(Header) + size);
+  header->previous = last;
+  last = header;
   return last + 1;
 }
 
 void abfree(void *ptr) {
   Header *header = (Header*) ptr - 1;
 
-  if (header == last)
+  if (header == last) {
+    last = header->previous;
     brk(header);
+  }
 }
