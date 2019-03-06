@@ -34,7 +34,7 @@ void linked_list_append(LinkedList *linkedList, void *data) {
 void *linked_list_remove(LinkedList *linkedList, int index) {
   int i = 0;
   void *data = NULL;
-  while (linkedList) {
+  while (linkedList && linkedList->next) {
     LinkedList* previous = linkedList;
     linkedList = linkedList->next;
     if (i == index) {
