@@ -11,7 +11,15 @@ typedef struct Header {
 Header *last = NULL;
 
 void *abmalloc(size_t size) {
-  Header *header = sbrk(sizeof(Header) + size);
+  Header *header = last;
+  while (header != NULL) {
+    if (header->available && (header->size >= size)) {
+      header->available = false;
+      return header + 1;
+    }
+    header = header->previous;
+  }
+  header = sbrk(sizeof(Header) + size);
   header->previous = last;
   header->size = size;
   header->available = false;
