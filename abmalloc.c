@@ -11,6 +11,9 @@ typedef struct Header {
 Header *last = NULL;
 
 void *abmalloc(size_t size) {
+  if (size == 0) {
+    return NULL;
+  }
   Header *header = last;
   while (header != NULL) {
     if (header->available && (header->size >= size)) {
@@ -28,6 +31,9 @@ void *abmalloc(size_t size) {
 }
 
 void abfree(void *ptr) {
+  if (ptr == NULL) {
+    return;
+  }
   Header *header = (Header*) ptr - 1;
 
   if (header == last) {

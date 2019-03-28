@@ -68,6 +68,15 @@ void test_abmalloc_abfree(CuTest *tc) {
   CuAssertStrEquals(tc, "ijkl", ptr3);
 }
 
+void test_abmalloc_zero(CuTest *tc) {
+  void *ptr = abmalloc(0);
+  CuAssertPtrEquals(tc, NULL, ptr);
+}
+
+void test_abfree_null(CuTest *tc) {
+  abfree(NULL);
+}
+
 CuSuite* ABMallocGetSuite() {
   static CuSuite suite;
   CuSuiteInit(&suite);
@@ -77,5 +86,7 @@ CuSuite* ABMallocGetSuite() {
   SUITE_ADD_TEST(&suite, test_abfree_bottom);
   SUITE_ADD_TEST(&suite, test_abfree_bottom_available_block_smaller_than_size);
   SUITE_ADD_TEST(&suite, test_abmalloc_abfree);
+  SUITE_ADD_TEST(&suite, test_abmalloc_zero);
+  SUITE_ADD_TEST(&suite, test_abfree_null);
   return &suite;
 }
