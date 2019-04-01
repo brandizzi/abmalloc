@@ -37,6 +37,9 @@ void abfree(void *ptr) {
   Header *header = (Header*) ptr - 1;
 
   if (header == last) {
+    while ((header->previous != NULL) && header->previous->available) {
+      header = header->previous;
+    }
     last = header->previous;
     brk(header);
   } else {
