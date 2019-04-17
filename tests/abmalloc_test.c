@@ -61,6 +61,21 @@ void test_abfree_bottom_available_block_smaller_than_size(CuTest *tc) {
   abfree(ptr3);
 }
 
+void test_abfree_bottom_and_second_top(CuTest *tc) {
+  void *ptr1 = abmalloc(8);
+  void *ptr2 = abmalloc(8);
+  void *initial_top = sbrk(0);
+  void *ptr3 = abmalloc(8);
+  void *ptr4 = abmalloc(8);
+  abfree(ptr1);
+  abfree(ptr3);
+  void *ptr5 = malloc(8);
+  abfree(ptr4);
+  CuAssertIntEquals(tc, 0, PTRSUB(sbrk(0), initial_top));
+  abfree(ptr2);
+  abfree(ptr5);
+}
+
 void test_abmalloc_abfree(CuTest *tc) {
   void *ptr1 = abmalloc(8);
   strncpy(ptr1, "abcd", 4);
@@ -95,6 +110,7 @@ CuSuite* ABMallocGetSuite() {
   SUITE_ADD_TEST(&suite, test_abfree_top_twice_first_in_first_out);
   SUITE_ADD_TEST(&suite, test_abfree_bottom);
   SUITE_ADD_TEST(&suite, test_abfree_bottom_available_block_smaller_than_size);
+  SUITE_ADD_TEST(&suite, test_abfree_bottom_and_second_top);
   SUITE_ADD_TEST(&suite, test_abmalloc_abfree);
   SUITE_ADD_TEST(&suite, test_abmalloc_zero);
   SUITE_ADD_TEST(&suite, test_abfree_null);
