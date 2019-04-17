@@ -10,6 +10,8 @@ typedef struct Header {
 
 Header *last = NULL;
 
+Header *header_new(Header *previous, size_t size, bool available);
+
 void *abmalloc(size_t size) {
   if (size == 0) {
     return NULL;
@@ -22,11 +24,7 @@ void *abmalloc(size_t size) {
     }
     header = header->previous;
   }
-  header = sbrk(sizeof(Header) + size);
-  header->previous = last;
-  header->size = size;
-  header->available = false;
-  last = header;
+  last = header_new(last, size, false);
   return last + 1;
 }
 
@@ -45,4 +43,12 @@ void abfree(void *ptr) {
   } else {
     header->available = true;
   }
+}
+
+Header *header_new(Header *previous, size_t size, bool available) {
+  Header *header = sbrk(sizeof(Header) + size);
+  header->previous = previous;
+  header->size = size;
+  header->available = false;
+  return header;
 }
