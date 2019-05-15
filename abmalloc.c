@@ -3,11 +3,12 @@
 #include <stdbool.h>
 
 typedef struct Header {
-  struct Header *previous;
+  struct Header *previous, *next;
   size_t size;
   bool available;
 } Header;
 
+Header *first = NULL;
 Header *last = NULL;
 
 Header *header_new(Header *previous, size_t size, bool available);
@@ -48,6 +49,7 @@ void abfree(void *ptr) {
 Header *header_new(Header *previous, size_t size, bool available) {
   Header *header = sbrk(sizeof(Header) + size);
   header->previous = previous;
+  header->next = NULL;
   header->size = size;
   header->available = false;
   return header;
