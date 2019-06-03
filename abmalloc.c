@@ -17,15 +17,20 @@ void *abmalloc(size_t size) {
   if (size == 0) {
     return NULL;
   }
-  Header *header = last;
+  if (first == NULL) {
+     first = last = header_new(NULL, size, false);
+     return first + 1;
+  }
+  Header *header = first;
   while (header != NULL) {
     if (header->available && (header->size >= size)) {
       header->available = false;
       return header + 1;
     }
-    header = header->previous;
+    header = header->next;
   }
   last = header_new(last, size, false);
+  last->previous->next = last;
   return last + 1;
 }
 
@@ -40,6 +45,7 @@ void abfree(void *ptr) {
       header = header->previous;
     }
     last = header->previous;
+    last->next = NULL;
     brk(header);
   } else {
     header->available = true;
